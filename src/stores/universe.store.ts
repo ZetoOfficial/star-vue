@@ -3,16 +3,12 @@ import { inputUniverseDto, createUniverse, updateUniverse, getUniverses, deleteU
 import { Universe } from '../models/universe'
 
 interface State {
-    selectedUniverseId: string | null,
-    inputUniverse: inputUniverseDto | null,
     universes: Universe[],
 }
 
 export const useUniverseStore = defineStore('universe', {
     state: (): State => {
         return {
-            selectedUniverseId: null,
-            inputUniverse: null,
             universes: []
         }
     },
@@ -21,7 +17,7 @@ export const useUniverseStore = defineStore('universe', {
             await createUniverse(dto)
         },
         async getUniverses() {
-            const universes = await getUniverses(100, 0)
+            const universes = await getUniverses()
             this.universes = universes
         },
         async updateUniverse(universeID: string, dto: inputUniverseDto) {

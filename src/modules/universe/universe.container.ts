@@ -1,46 +1,53 @@
-import { defineComponent, h, onMounted, ref } from 'vue'
+import { defineComponent, h, onMounted, onUnmounted } from 'vue'
 import Universe from './universe.page.vue';
 import { useUniverseStore } from "../../stores/universe.store";
+import { useLocalStorageStore } from "../../stores/localstorage.store";
+import { inputUniverseDto } from '../../api/universe';
+import { TRIGGER_UNIVERSE_KEY } from "../../constants";
 
 export default defineComponent(() => {
     const store = useUniverseStore()
+    const localStorageStore = useLocalStorageStore()
 
-    const defaultUniverse = {
-        name: "",
-        size: 0,
-        composition: "",
-    };
-
-    const isCreateModalOpen = ref(false);
-    const isEditModalOpen = ref(false);
-    const isDeleteModalOpen = ref(false);
-
-    async function createAndRefresh() {
-        if (!store.inputUniverse) return
-        await store.createUniverse(store.inputUniverse)
+    async function createAndRefresh(dto: inputUniverseDto) {
+        if (!validateInputs(dto)) return
+        await store.createUniverse(dto)
         await store.getUniverses()
-        store.inputUniverse = null
-        isCreateModalOpen.value = false;
+
+        localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
     }
 
-    async function updateUniverseAndRefresh() {
-        if (!store.selectedUniverseId) return console.log("No universe selected")
-        if (!store.inputUniverse) return console.log("No input dto")
-        console.log(`update and refresh with id ${store.selectedUniverseId} - ${JSON.stringify(store.inputUniverse)}`)
-        await store.updateUniverse(store.selectedUniverseId, store.inputUniverse)
+    async function updateUniverseAndRefresh(id: string, dto: inputUniverseDto) {
+        if (!validateInputs(dto)) return
+        console.log(`update and refresh with id ${id} - ${JSON.stringify(dto)}`)
+        await store.updateUniverse(id, dto)
         await store.getUniverses()
-        isEditModalOpen.value = false;
+
+        localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
     }
 
-    async function deleteUniverseAndRefresh() {
-        if (!store.selectedUniverseId) return
-        await store.deleteUniverseById(store.selectedUniverseId)
+    async function deleteUniverseAndRefresh(id: string) {
+        await store.deleteUniverseById(id)
         await store.getUniverses()
-        isDeleteModalOpen.value = false;
+
+        localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
+    }
+
+    function validateInputs(dto: inputUniverseDto) {
+        if (!dto) return false
+        if (!dto.name || dto.name.trim().length === 0) return false
+        if (isNaN(dto.size) || dto.size < 0) return false
+        if (!dto.composition || dto.composition.trim().length === 0) return false
+        return true;
     }
 
     onMounted(async () => {
         await store.getUniverses()
+        localStorageStore.watch(TRIGGER_UNIVERSE_KEY, () => store.getUniverses())
+    })
+
+    onUnmounted(() => {
+        localStorageStore.unwatch(TRIGGER_UNIVERSE_KEY)
     })
 
     return () => h(Universe, {
@@ -51,45 +58,10 @@ export default defineComponent(() => {
             { key: "composition", sortable: true },
             { key: "actions", width: 80 },
         ],
+        filterColumns: ["name", "size", "composition"],
 
-        inputUniverse: store.inputUniverse || defaultUniverse,
-
-        openCreateModal: () => {
-            store.inputUniverse = { ...defaultUniverse }
-            isCreateModalOpen.value = true;
-        },
-        isCreateModalOpen: isCreateModalOpen.value,
         createItem: createAndRefresh,
-
-        openEditModal: (id: number) => {
-            const selectedItem = store.universes[id]
-            store.selectedUniverseId = selectedItem.id
-            store.inputUniverse = {
-                name: selectedItem.name,
-                size: selectedItem.size,
-                composition: selectedItem.composition
-            }
-            isEditModalOpen.value = true;
-            console.log(`Edit universe ${selectedItem.name} with id ${selectedItem.id}`)
-        },
-        isEditModalOpen: isEditModalOpen.value,
         updateItem: updateUniverseAndRefresh,
-
-        openDeleteModal: (id: number) => {
-            const selectedItem = store.universes[id]
-            store.selectedUniverseId = selectedItem.id
-            isDeleteModalOpen.value = true;
-        },
-        isDeleteModalOpen: isDeleteModalOpen.value,
         deleteItem: deleteUniverseAndRefresh,
-
-        resetModal: () => {
-            store.inputUniverse = null
-            store.selectedUniverseId = null
-            isCreateModalOpen.value = false;
-            isEditModalOpen.value = false;
-            isDeleteModalOpen.value = false;
-            console.log("Reset modal")
-        }
     });
 })

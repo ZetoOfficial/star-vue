@@ -1,4 +1,5 @@
 import { Universe } from "../models/universe";
+import { composeURL } from './url';
 
 export interface inputUniverseDto {
     name: string,
@@ -6,22 +7,18 @@ export interface inputUniverseDto {
     composition: string
 }
 
-export async function createUniverse(dto: inputUniverseDto): Promise<Universe> {
-    const baseUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${baseUrl}/api/universes`, {
+export async function createUniverse(dto: inputUniverseDto) {
+    await fetch(composeURL('/api/Universe'), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dto)
     });
-
-    return response.json();
 }
 
-export async function getUniverses(limit: number, offset: number): Promise<Universe[]> {
-    const baseUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${baseUrl}/api/universes?limit=${limit}&offset=${offset}`, {
+export async function getUniverses(): Promise<Universe[]> {
+    const response = await fetch(composeURL('/api/Universe'), {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -31,34 +28,18 @@ export async function getUniverses(limit: number, offset: number): Promise<Unive
     return response.json();
 }
 
-export async function getUniverseById(universeID: string): Promise<Universe> {
-    const baseUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${baseUrl}/api/universes/${universeID}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-
-    return response.json();
-}
-
-export async function updateUniverse(universeID: string, dto: inputUniverseDto): Promise<Universe> {
-    const baseUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${baseUrl}/api/universes/${universeID}`, {
+export async function updateUniverse(universeID: string, dto: inputUniverseDto) {
+    await fetch(composeURL(`/api/Universe/${universeID}`), {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dto)
     })
-
-    return response.json();
 }
 
 export async function deleteUniverseById(universeID: string): Promise<void> {
-    const baseUrl = import.meta.env.VITE_API_URL;
-    await fetch(`${baseUrl}/api/universes/${universeID}`, {
+    await fetch(composeURL(`/api/Universe/${universeID}`), {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
