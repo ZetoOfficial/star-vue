@@ -3,7 +3,7 @@ import { composeURL } from './url';
 
 export interface inputStarDto {
     name: string,
-    spectral_type: string,
+    spectralType: string,
     luminosity: number,
     distanceFromEarth: number,
     temperature: number,

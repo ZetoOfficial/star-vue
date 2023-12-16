@@ -1,8 +1,8 @@
 <template>
     <VaForm ref="universeForm" tag="form" class="formaboba">
         <VaInput v-model="form.name" class="mt-3" label="Name" name="Name" :rules="[v => !!v || 'Name is required']" />
-        <VaCounter v-model="form.size" label="Size" name="Size"
-            :rules="[(v) => v || 'Field is required', (v) => v > 0 || 'Размер должен быть больше нуля']" manual-input />
+        <VaInput v-model="form.size" name="size" label="Size" type="number"
+            :rules="[(v) => Number(v) > 0 || 'Размер должен быть больше нуля']" class=" mb-3" />
         <VaInput v-model="form.composition" class="mt-3" name="Composition" label="Composition"
             :rules="[v => !!v || 'Composition is required']" />
         <p v-if="error" class="error">Error: {{ error.message }}</p>
@@ -27,9 +27,9 @@ const initData = unref(props.initData);
 const error = ref<Error | null>(null);
 
 const form = reactive({
-    name: initData?.name ?? " ",
+    name: initData?.name ?? '',
     size: initData?.size ?? 0,
-    composition: initData?.composition ?? " ",
+    composition: initData?.composition ?? '',
 })
 
 async function handleSubmit() {

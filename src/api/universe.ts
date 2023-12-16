@@ -7,7 +7,7 @@ export interface inputUniverseDto {
     composition: string
 }
 
-export async function createUniverse(dto: inputUniverseDto) {
+export async function createUniverse(dto: inputUniverseDto): Promise<void> {
     await fetch(composeURL('/api/Universe'), {
         method: 'POST',
         headers: {
@@ -28,7 +28,7 @@ export async function getUniverses(): Promise<Universe[]> {
     return response.json();
 }
 
-export async function updateUniverse(universeID: string, dto: inputUniverseDto) {
+export async function updateUniverse(universeID: string, dto: inputUniverseDto): Promise<void> {
     await fetch(composeURL(`/api/Universe/${universeID}`), {
         method: 'PUT',
         headers: {

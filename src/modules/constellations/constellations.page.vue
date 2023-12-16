@@ -11,13 +11,13 @@
     </VaDataTable>
 
     <VaModal class="modal-crud" :model-value="isCreateModalOpenRef" size="small" hide-default-actions @cancel="resetModal">
-        <h3 class="va-h3">Создание планеты</h3>
-        <PlanetForm :init-data="selectedItemRef" :stars="stars" :submit="closeModal(createItem)" />
+        <h3 class="va-h3">Создание созвездия</h3>
+        <ConstellationForm :init-data="selectedItemRef" :galaxies="galaxies" :submit="closeModal(createItem)" />
     </VaModal>
 
     <VaModal class="modal-crud" :model-value="isEditModalOpenRef" size="small" hide-default-actions @cancel="resetModal">
-        <h3 class="va-h3">Редактирование планеты</h3>
-        <PlanetForm :init-data="selectedItemRef" :stars="stars" :submit="handleUpdate" />
+        <h3 class="va-h3">Редактирование созвездия</h3>
+        <ConstellationForm :init-data="selectedItemRef" :galaxies="galaxies" :submit="handleUpdate" />
     </VaModal>
 
     <VaModal :model-value="isDeleteModalOpenRef" size="small" @ok="handleDelete" @cancel="resetModal" blur>
@@ -27,31 +27,31 @@
 </template>
   
 <script lang="ts" setup>
-import { Planet } from '../../models/planet';
-import { Star } from '../../models/star';
-import { inputPlanetDto } from '../../api/planets';
+import { Constellation } from '../../models/constellation';
+import { Galaxy } from '../../models/galaxy';
+import { inputConstellationDto } from '../../api/constelations';
 import { computed, defineProps, ref } from 'vue';
-import PlanetForm from '../../components/planet.form.vue';
+import ConstellationForm from '../../components/constellation.form.vue';
 
 const props = defineProps<{
-    items: Planet[];
+    items: Constellation[];
     columns: string[];
-    stars: Star[];
+    galaxies: Galaxy[];
     filterColumns: string[];
 
-    createItem: (form: inputPlanetDto) => Promise<void>;
-    updateItem: (id: string, form: inputPlanetDto) => Promise<void>;
+    createItem: (form: inputConstellationDto) => Promise<void>;
+    updateItem: (id: string, form: inputConstellationDto) => Promise<void>;
     deleteItem: (id: string) => Promise<void>;
 }>();
 
-const selectedItemRef = ref<Planet | null>(null)
+const selectedItemRef = ref<Constellation | null>(null)
 const filterColumnsRef = ref<string>("name")
 const filteredItems = computed(() => {
     if (!filterInput.value) {
         return props.items
     }
     return props.items.filter(item => {
-        const key = filterColumnsRef.value as keyof Planet;
+        const key = filterColumnsRef.value as keyof Constellation;
         return item[key].toString().toLowerCase().includes(filterInput.value.toLowerCase());
     });
 })
@@ -89,7 +89,7 @@ function openDeleteModal(rowIndex: number) {
     console.log(`Delete universe ${selectedItemRef.value.name} with id ${selectedItemRef.value.id}`)
 }
 
-async function handleUpdate(form: inputPlanetDto) {
+async function handleUpdate(form: inputConstellationDto) {
     await props.updateItem(selectedItemRef.value!.id, form)
     resetModal()
 }

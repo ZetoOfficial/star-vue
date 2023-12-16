@@ -9,41 +9,34 @@ export default defineComponent(() => {
     const store = useUniverseStore()
     const localStorageStore = useLocalStorageStore()
 
+    async function refresh() {
+        await store.getUniverses()
+    }
+
     async function createAndRefresh(dto: inputUniverseDto) {
-        if (!validateInputs(dto)) return
         await store.createUniverse(dto)
-        await store.getUniverses()
+        await refresh()
 
         localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
     }
 
-    async function updateUniverseAndRefresh(id: string, dto: inputUniverseDto) {
-        if (!validateInputs(dto)) return
-        console.log(`update and refresh with id ${id} - ${JSON.stringify(dto)}`)
+    async function updateAndRefresh(id: string, dto: inputUniverseDto) {
         await store.updateUniverse(id, dto)
-        await store.getUniverses()
+        await refresh()
 
         localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
     }
 
-    async function deleteUniverseAndRefresh(id: string) {
+    async function deleteAndRefresh(id: string) {
         await store.deleteUniverseById(id)
-        await store.getUniverses()
+        await refresh()
 
         localStorageStore.triggerTimeoutKey(TRIGGER_UNIVERSE_KEY)
-    }
-
-    function validateInputs(dto: inputUniverseDto) {
-        if (!dto) return false
-        if (!dto.name || dto.name.trim().length === 0) return false
-        if (isNaN(dto.size) || dto.size < 0) return false
-        if (!dto.composition || dto.composition.trim().length === 0) return false
-        return true;
     }
 
     onMounted(async () => {
-        await store.getUniverses()
-        localStorageStore.watch(TRIGGER_UNIVERSE_KEY, () => store.getUniverses())
+        await refresh()
+        localStorageStore.watch(TRIGGER_UNIVERSE_KEY, async () => await refresh())
     })
 
     onUnmounted(() => {
@@ -61,7 +54,7 @@ export default defineComponent(() => {
         filterColumns: ["name", "size", "composition"],
 
         createItem: createAndRefresh,
-        updateItem: updateUniverseAndRefresh,
-        deleteItem: deleteUniverseAndRefresh,
+        updateItem: updateAndRefresh,
+        deleteItem: deleteAndRefresh,
     });
 })

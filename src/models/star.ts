@@ -1,7 +1,7 @@
 export interface Star {
   id: string,
   name: string,
-  spectral_type: string,
+  spectralType: string,
   luminosity: number,
   distanceFromEarth: number,
   temperature: number,

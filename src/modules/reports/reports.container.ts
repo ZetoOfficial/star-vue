@@ -8,7 +8,6 @@ export default defineComponent(() => {
     const store = useReportStore()
     const galaxyStore = useGalaxyStore()
 
-
     async function getReportInfo(galaxyId: string): Promise<ReportInfo> {
         return await store.getReportData(galaxyId)
     }

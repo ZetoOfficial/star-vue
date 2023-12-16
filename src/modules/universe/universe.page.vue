@@ -1,7 +1,7 @@
 <template>
   <VaButton @click="openCreateModal()">Создать</VaButton>
-  <VaSelect v-model="filterColumnsRef" :options="filterColumns" />
-  <VaInput v-model="filterInput" placeholder="Filter..." class="w-full" />
+  <VaSelect v-model="filterColumnsRef" class="ml-3" :options="filterColumns" />
+  <VaInput v-model="filterInput" placeholder="Filter..." class="ml-3" />
 
   <VaDataTable class="table-crud" :items="filteredItems" :columns="columns" striped>
     <template #cell(actions)="{ rowIndex }">
@@ -45,16 +45,15 @@ const props = defineProps<{
 }>();
 
 const selectedItemRef = ref<Universe | null>(null)
-const filterColumnsRef = ref<(keyof Universe)[]>(["name"])
+const filterColumnsRef = ref<string>("name")
 const filteredItems = computed(() => {
   if (!filterInput.value) {
     return props.items
   }
   return props.items.filter(item => {
-    return filterColumnsRef.value.some(column => {
-      return item[column].toString().includes(filterInput.value.toLowerCase())
-    })
-  })
+    const key = filterColumnsRef.value as keyof Universe;
+    return item[key].toString().toLowerCase().includes(filterInput.value.toLowerCase());
+  });
 })
 const isCreateModalOpenRef = ref<boolean>(false)
 const isEditModalOpenRef = ref(false)

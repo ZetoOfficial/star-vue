@@ -1,7 +1,7 @@
 <template>
     <VaSelect v-model="selectedGalaxyRef" :options="selectOptions" text-by="name" />
-    <VaButton :href="getDownloadReportLink('excel')">Скачать Excel отчет</VaButton>
-    <VaButton :href="getDownloadReportLink('word')">Скачать Word отчет</VaButton>
+    <VaButton :href="getDownloadReportLink('excel')" class="ml-3">Скачать Excel отчет</VaButton>
+    <VaButton :href="getDownloadReportLink('word')" class="ml-3">Скачать Word отчет</VaButton>
 
     <VaDataTable class="table-crud" :items="reportInfo" :columns="columns" striped>
     </VaDataTable>
