@@ -48,13 +48,19 @@ const selectedItemRef = ref<Universe | null>(null)
 const filterColumnsRef = ref<string>("name")
 const filteredItems = computed(() => {
   if (!filterInput.value) {
-    return props.items
+    return props.items;
   }
   return props.items.filter(item => {
     const key = filterColumnsRef.value as keyof Universe;
-    return item[key].toString().toLowerCase().includes(filterInput.value.toLowerCase());
+    const itemValue = item[key];
+    if (typeof itemValue === 'number') {
+      return itemValue === Number(filterInput.value);
+    } else {
+      return itemValue.toString().toLowerCase().includes(filterInput.value.toLowerCase());
+    }
   });
-})
+});
+
 const isCreateModalOpenRef = ref<boolean>(false)
 const isEditModalOpenRef = ref(false)
 const isDeleteModalOpenRef = ref(false)
