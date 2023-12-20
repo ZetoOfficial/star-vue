@@ -7,7 +7,7 @@
         <VaInput v-model="form.history" class="mt-3" label="History" name="History"
             :rules="[v => !!v || 'History is required']" />
         <VaSelect v-model="form.galaxyId" text-by="name" value-by="id" class="mt-3" label="Galaxy" name="Galaxy"
-            :rules="[v => !!v || 'Galaxy is required']" :options="galaxies" />
+            :rules="[v => v !== '' || 'Galaxy is required']" :options="galaxies" />
 
         <VaButton class="mt-3" :disabled="!isValid" @click="validate() && handleSubmit()">
             Send

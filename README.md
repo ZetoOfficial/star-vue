@@ -1,24 +1,19 @@
 # starvue
 
-## Project setup
+## Установка зависимостей
+
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Запуск
+
 ```
-npm run serve
+npm run dev
 ```
 
-### Compiles and minifies for production
+### Билд
+
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

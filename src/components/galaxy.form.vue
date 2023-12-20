@@ -9,7 +9,7 @@
         <VaInput v-model="form.distanceFromEarth" name="distanceFromEarth" label="Distance from Earth" type="number"
             :rules="[(v) => Number(v) > 0 || 'Дистанция должна быть больше нуля']" class="mb-3" />
         <VaSelect v-model="form.universeId" text-by="name" value-by="id" name="universeId" label="Universe"
-            :options="universes" :rules="[v => !!v || 'Universe is required']" class="mb-3" />
+            :options="universes" :rules="[v => v !== '' || 'Universe is required']" class="mb-3" />
 
         <VaButton class="mt-3" :disabled="!isValid" @click="validate() && handleSubmit()">
             Send

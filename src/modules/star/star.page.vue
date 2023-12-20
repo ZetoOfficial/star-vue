@@ -54,6 +54,10 @@ const filteredItems = computed(() => {
   }
   return props.items.filter(item => {
     const key = filterColumnsRef.value as keyof Star;
+    if (key.includes('.')) {
+      const [firstKey, secondKey] = key.split('.');
+      return item[firstKey][secondKey].toString().toLowerCase().includes(filterInput.value.toLowerCase());
+    }
     const itemValue = item[key];
     if (typeof itemValue === 'number') {
       return itemValue === Number(filterInput.value);

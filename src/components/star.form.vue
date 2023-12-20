@@ -10,7 +10,7 @@
         <VaInput v-model="form.temperature" class="mt-3" label="Temperature" name="Temperature"
             :rules="[v => !!v || 'Temperature is required']" />
         <VaSelect v-model="form.galaxyId" text-by="name" value-by="id" :options="galaxies" label="Galaxy" name="Galaxy"
-            class="mt-3" />
+            :rules="[v => v !== '' || 'Galaxy is required']" class="mt-3" />
 
         <p v-if="error" class="error">Error: {{ error.message }}</p>
         <VaButton class="mt-3" :disabled="!isValid" @click="validate() && handleSubmit()">
